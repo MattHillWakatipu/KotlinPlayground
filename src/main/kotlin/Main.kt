@@ -1,96 +1,77 @@
-import kotlin.math.PI
-import kotlin.math.sqrt
+open class Item(val name: String, val price: Int)
+
+class Noodles : Item("Noodles", 10) {
+    override fun toString(): String {
+        return name
+    }
+}
+
+class Vegetables(vararg val toppings: String) : Item("Vegetables", 5) {
+    override fun toString(): String {
+        if (toppings.isEmpty()) {
+            return "$name Chef's Choice"
+        }
+        return "$name ${toppings.joinToString(" ")}"
+    }
+}
+
+class Order(private val orderNumber: Int) {
+    private val itemList = mutableListOf<Item>()
+
+    fun addItem(item: Item): Order {
+        itemList.add(item)
+        return this
+    }
+
+    fun addAll(items: List<Item>): Order {
+        itemList.addAll(items)
+        return this
+    }
+
+    fun print() {
+        println("Order #${orderNumber}")
+        var total = 0
+        for (item in itemList) {
+            println("${item}: $${item.price}")
+            total += item.price
+        }
+        println("Total: $${total}")
+    }
+}
+
 
 fun main() {
+    val ordersList = mutableListOf<Order>()
 
-    val squareCabin = SquareCabin(6, 50.0)
-    val roundHut = RoundHut(3, 10.0)
-    val roundTower = RoundTower(4, 2,15.5)
+    val order1 = Order(1)
+    order1.addItem(Noodles())
+    ordersList.add(order1)
 
-    with(squareCabin) {
-        println("\nSquare Cabin\n============")
-        println("Capacity: $capacity")
-        println("Material: $buildingMaterial")
-        println("Has room? ${hasRoom()}")
-        println("Floor area: ${floorArea()}")
-    }
+    val order2 = Order(2)
+    order2.addItem(Noodles())
+    order2.addItem(Vegetables())
+    ordersList.add(order2)
 
-    with(roundHut) {
-        println("\nRound Hut\n=========")
-        println("Material: $buildingMaterial")
-        println("Capacity: $capacity")
-        println("Has room? ${hasRoom()}")
-        println("Floor area: ${floorArea()}")
-        println("Has room? ${hasRoom()}")
-        getRoom()
-        println("Has room? ${hasRoom()}")
-        getRoom()
-        println("Carpet size: ${calculateMaxCarpetSize()}")
-    }
+    val order3 = Order(3)
+    val items = listOf(Noodles(), Vegetables("Carrots", "Beans", "Celery"))
+    order3.addAll(items)
+    ordersList.add(order3)
 
-    with(roundTower) {
-        println("\nRound Tower\n==========")
-        println("Material: $buildingMaterial")
-        println("Capacity: $capacity")
-        println("Has room? ${hasRoom()}")
-        println("Floor area: ${floorArea()}")
-        println("Carpet size: ${calculateMaxCarpetSize()}")
-    }
-}
+    val order4 = Order(4)
+        .addItem(Noodles())
+        .addItem(Vegetables("Cabbage", "Onion"))
+    ordersList.add(order4)
+
+    ordersList.add(
+        Order(5)
+            .addItem(Noodles())
+            .addItem(Noodles())
+            .addItem(Vegetables("Spinach"))
+    )
 
 
-abstract class Dwelling(private var residents: Int) {
-    abstract val buildingMaterial: String
-    abstract val capacity: Int
-    abstract fun floorArea(): Double
-
-    fun hasRoom(): Boolean {
-        return residents < capacity
-    }
-
-    fun getRoom() {
-        if (capacity > residents) {
-            residents++
-            println("You got a room!")
-        } else {
-            println("Sorry, at capacity and no rooms left.")
-        }
-    }
-}
-
-
-class SquareCabin(residents: Int, private val length: Double) : Dwelling(residents) {
-    override val buildingMaterial = "Wood"
-    override val capacity = 6
-    override fun floorArea(): Double {
-        return length * length
-    }
-}
-
-
-open class RoundHut(residents: Int, private val radius: Double) : Dwelling(residents) {
-    override val buildingMaterial = "Straw"
-    override val capacity = 4
-    override fun floorArea(): Double {
-        return PI * radius * radius
-    }
-
-    fun calculateMaxCarpetSize(): Double {
-        val diameter = 2 * radius
-        return sqrt(diameter * diameter / 2)
-    }
-}
-
-
-class RoundTower(
-    residents: Int,
-    private val floors: Int = 2, radius: Double
-) : RoundHut(residents, radius) {
-
-    override val buildingMaterial = "Stone"
-    override val capacity = 4 * floors
-
-    override fun floorArea(): Double {
-        return super.floorArea() * floors
+    for (order in ordersList) {
+        order.print()
+        println()
     }
 }
