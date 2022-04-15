@@ -1,77 +1,9 @@
-open class Item(val name: String, val price: Int)
-
-class Noodles : Item("Noodles", 10) {
-    override fun toString(): String {
-        return name
-    }
-}
-
-class Vegetables(vararg val toppings: String) : Item("Vegetables", 5) {
-    override fun toString(): String {
-        if (toppings.isEmpty()) {
-            return "$name Chef's Choice"
-        }
-        return "$name ${toppings.joinToString(" ")}"
-    }
-}
-
-class Order(private val orderNumber: Int) {
-    private val itemList = mutableListOf<Item>()
-
-    fun addItem(item: Item): Order {
-        itemList.add(item)
-        return this
-    }
-
-    fun addAll(items: List<Item>): Order {
-        itemList.addAll(items)
-        return this
-    }
-
-    fun print() {
-        println("Order #${orderNumber}")
-        var total = 0
-        for (item in itemList) {
-            println("${item}: $${item.price}")
-            total += item.price
-        }
-        println("Total: $${total}")
-    }
-}
-
-
 fun main() {
-    val ordersList = mutableListOf<Order>()
+    val words = listOf("about", "acute", "awesome", "balloon", "best", "brief", "class", "coffee", "creative")
+    val filteredWords = words.filter { it.startsWith("b", ignoreCase = true) }
+        .shuffled()
+        .take(2)
+        .sorted()
 
-    val order1 = Order(1)
-    order1.addItem(Noodles())
-    ordersList.add(order1)
-
-    val order2 = Order(2)
-    order2.addItem(Noodles())
-    order2.addItem(Vegetables())
-    ordersList.add(order2)
-
-    val order3 = Order(3)
-    val items = listOf(Noodles(), Vegetables("Carrots", "Beans", "Celery"))
-    order3.addAll(items)
-    ordersList.add(order3)
-
-    val order4 = Order(4)
-        .addItem(Noodles())
-        .addItem(Vegetables("Cabbage", "Onion"))
-    ordersList.add(order4)
-
-    ordersList.add(
-        Order(5)
-            .addItem(Noodles())
-            .addItem(Noodles())
-            .addItem(Vegetables("Spinach"))
-    )
-
-
-    for (order in ordersList) {
-        order.print()
-        println()
-    }
+    println(filteredWords)
 }
